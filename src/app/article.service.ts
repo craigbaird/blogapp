@@ -13,4 +13,10 @@ export class ArticleService {
     return this._http.get("/api/all")
     .map(result => this.result = result.json());
   }
+
+  getArticle(id) {
+    return this._http.get("/api/articles/" + id)
+      .map(result => this.result = result.json());
+  }
+
 }
