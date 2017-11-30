@@ -1,18 +1,20 @@
 const express = require('express');
 const router = express.Router();
-const mongoose = require('mongoose');
+const mongoose = require('mongoose'); 
 const article = require('../models/article');
 
-const db = 'mongodb://bloguser:1234@ds121696.mlab.com:21696/blogapp';
+const db = "mongodb://bloguser:mymlabpw@ds145639.mlab.com:45639/blogapp";
+
 
 mongoose.Promise = global.Promise;
-mongoose.connect(db, function(err){
+mongoose.connect(db, function(err) {
     if(err) {
         console.log('Error connecting');
     }
 });
 
 router.get('/all', function(req, res) {
+
     article.find({})
         .exec(function(err, articles) {
             if (err) {
@@ -33,10 +35,10 @@ router.get('/articles/:id', function(req, res) {
             } else {
                 res.json(article);
             }
-        })
-})
+        });
+});
 
-router.post('create', function(req, res) {
+router.post('/create', function(req, res) {
     console.log('Posting an Article');
     var newArticle = new article();
     newArticle.title = req.body.title;
@@ -47,7 +49,23 @@ router.post('create', function(req, res) {
         } else {
             res.json(article);
         }
-    })
-})
+    });
+});
+
+router.post('/update/:id', function(req, res) {
+    console.log('Updating an Article');
+
+    article.findById(req.params.id)
+        .exec(function(err, article) {
+            if (err) {
+                console.log('Could not find the article');
+            } else {
+                article.title = req.body.title;
+                article.content = req.body.content;
+                article.save();
+                res.json(article);
+            }
+        });
+});
 
 module.exports = router;
